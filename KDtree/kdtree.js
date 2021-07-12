@@ -227,6 +227,7 @@ function knn(node, puntoConsulta, kpoints, depth = 0) {
     }
   }
 
+
   /**
    * 
    * Ultima parte
