@@ -1,8 +1,9 @@
 let root = null;
+let data = [];
 
 function setup() {
-    var width = 500;
-	var height = 500;
+    var width = 800;
+	var height = 800;
 
     createCanvas(width, height);
 
@@ -16,37 +17,40 @@ function setup() {
         }
     }
     //debugger;
-    // var data = [];
-    // for (let i = 0; i < 12; i++) {
-    //     var x = Math.floor(Math.random() * height);
-    //     var y = Math.floor(Math.random() * height);
-    //     data.push([x, y]);
 
-    //     fill(255, 255, 255);
-    //     circle(x, height - y, 7); //200-y para q se dibuje apropiadamente
-    //     textSize(8);
-    //     text(x + ',' + y, x + 5, height - y); //200-y para q se dibuje apropiadamente
-    // }
+    withQuery = createCheckbox('Activar Circular');
+    withQuery.checked(true);
 
-    var data = [];
+	data = [];
+    for (let i = 0; i < 100; i++) {
+        var x = Math.floor(Math.random() * height);
+        var y = Math.floor(Math.random() * height);
+        data.push([x, y]);
 
+        fill(255, 255, 255);
+        circle(x, height - y, 7); //200-y para q se dibuje apropiadamente
+        textSize(8);
+        text(x + ',' + y, x + 5, height - y); //200-y para q se dibuje apropiadamente
+    }
 
-	for(let i = 0; i < 100; i++){
-		var x = Math.floor(Math.random() * height);
-		var y = Math.floor(Math.random() * height);
-		data.push([x,y]);
-		fill(255, 255, 255);
-		circle(x, height - y, 7);
-		textSize(8);
-		text(x + ',' + y , x + 5, height - y);
-	}
-
+    
     //console.log('Altura del Arbol es ' + getHeight(root));
     //console.log(generate_dot(root));
 
-    data = [[40,70],[70,130],[90,40],[110,100],[140,110],[160,100]];
-    //data = [[40,70],[70,130],[90,40],[110,100],[140,110],[160,100],[150,30]];
+    //data = [[40,70],[70,130],[90,40],[110,100],[140,110],[160,100]];
+    // data = [[40,70],[70,130],[90,40],[110,100],[140,110],[160,100],[150,30]];
     
+	
+	
+	// for(let i = 0; i < data.length; i++){
+	// 	// var x = Math.floor(Math.random() * height);
+	// 	// var y = Math.floor(Math.random() * height);
+	// 	//data.push([data[i][0], data[i][1]]);
+	// 	fill(255, 255, 255);
+	// 	circle(data[i][0], height - data[i][1], 7);
+	// 	textSize(8);
+	// 	text(data[i][0] + ',' + data[i][1], data[i][0] + 5, height - data[i][1]);
+	// }
 
     var puntoConsulta = [140, 90];    
 
@@ -67,13 +71,32 @@ function setup() {
     console.log(kvecinos);
 
     
+    
+
+}
+
+function draw() {
+    background(0);
+    show();
+
     var quee= [];
 	var quee2 = [];
-	var point_s = [350,150];
-	var point_s2 =  [150,300];
+
+    if (withQuery.checked()) { 
+        var point_s = [150,300];
+        //var point_s =   [mouseX, height -mouseY];
+        //var point_s2 = [150,300];
+        var point_s2 =   [mouseX, height -mouseY];
+    }
+    else {    
+        //var point_s = [150,300];
+        var point_s =   [mouseX, height -mouseY];
+        var point_s2 = [150,300];
+        //var point_s2 =   [mouseX, height -mouseY];
+    }
+    
 	var dimen=[75,30];
 	var radio=75;
-
 
 	range_query_circle(root,point_s2,radio,quee2);
 	range_query_rect(root,point_s,dimen,quee);
@@ -97,8 +120,28 @@ function setup() {
 		circle(quee2[i][0],height-quee2[i][1],7); 
 		textSize(8);
 		text(quee2[i][0] + ',' + quee2[i][1],quee2[i][0]+5,height-quee2[i][1]); 
-	}
+	}  
+}
 
+function show () {
+
+    for (var x = 0; x < width; x += width / 10) {
+        for (var y = 0; y < height; y += height / 5) {
+            stroke(125, 125, 125);
+            strokeWeight(0.5);
+            line(x, 0, x, height);
+            line(0, y, width, y);
+        }
+    }
     
+    for(let i = 0; i < data.length; i++){
+		// var x = Math.floor(Math.random() * height);
+		// var y = Math.floor(Math.random() * height);
+		//data.push([data[i][0], data[i][1]]);
+		fill(255, 255, 255);
+		circle(data[i][0], height - data[i][1], 7);
+		textSize(8);
+		text(data[i][0] + ',' + data[i][1], data[i][0] + 5, height - data[i][1]);
+	}
 
 }
