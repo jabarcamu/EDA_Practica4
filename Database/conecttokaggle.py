@@ -107,7 +107,10 @@ class NumpyEncoder(json.JSONEncoder):
 
     return json.JSONEncoder.default(self, obj)
 
-
+# convirtiendo al formato JSON
+result = data.to_json(orient="records")
+parsed = json.loads(result)
+# obteniendo los datos de la columna genre
 genre = data["genre"]
 
 CountVec = CountVectorizer()
@@ -124,6 +127,8 @@ print(len(VectorCaracteristicoCount.toarray()))
 
 
 # tempVect = VectorCaracteristicoTfidf.toarray();
+
+# vector caracteristico de bag of words, en arreglo
 tempVect = VectorCaracteristicoCount.toarray()
 
 datajson = {"data":[]}
@@ -132,22 +137,31 @@ for x in range(len(data)):
   arr = [data['Duration'][x], data['year'][x],data['rating'][x]]
   movie = [data['Duration'][x], data['year'][x],data['rating'][x],data['movie_name'][x], data['director'][x],data['actors'][x],data['country'][x], data['rating'][x],data['enter_in_netflix'][x],]  
   datajson["data"].append({
-    "vector": (np.concatenate((arr, tempVect[x]), axis=None)).tolist(),
-    "obj": movie
+    "vector": arr + tempVect[x].tolist(),
+    "obj": parsed[x]
   })
-  if x == 1 :
+  if x == 0 :
     print((np.concatenate((arr, tempVect[x]), axis=None)).tolist())
     print(datajson)  
     print(movie)  
+    print('Result ...........')
+    print(parsed[x])
 
 print([data['Duration'][0], data['year'][0],data['rating'][0]])
-print(list(np.concatenate(([1,2,3],[-1,-2,-3]))))
-print((np.concatenate(([1,2,3],[-1,-2,-3])).tolist()))
+
 
 json_data = json.dumps(datajson, cls=NumpyEncoder)
 
-with open('training.json', 'w') as outfile:
-    json.dump(json_data, outfile)
+# with open('training.json', 'w') as outfile:
+#     json.dump(datajson, outfile)
+
+
+# Writing to sample.json
+with open("training.json", "w") as outfile:
+    outfile.write(json_data)
+
+# with open('training.json', 'w', encoding='utf-8') as f:
+#     json.dump(json_data, f, ensure_ascii=False, indent=4)
 
 # a_file = open("test.txt", "w")
 # for row in result:
@@ -158,7 +172,14 @@ with open('training.json', 'w') as outfile:
 # a_file.close()
 #
 
+!rm -f ~/.kaggle/datasets/training.json
+
 # Commented out IPython magic to ensure Python compatibility.
+
+# %cd/
+!ls
+# %cd var
+!ls
 # %cd ~/.kaggle/datasets
 !ls -a
 
