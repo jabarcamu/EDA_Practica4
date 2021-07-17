@@ -1,0 +1,25 @@
+
+
+<!doctype html>
+<html>
+	<title> Simple Tables </title>
+	<script src="{{ url_for('static', filename='lib/p5.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/sketch.js') }}"></script>
+		
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+	<body>
+		<form method="post">
+			<label for="searchmovie">Ingrese Nombre de Pelicula</label>
+			<input name="searchmovie" id="searchmovie" required>
+			<input type="submit" value="Buscar Pelicula">
+		</form>
+		<div class=page>
+			<h1> MiTabla </h1>
+			{% for table in tables %}
+			<h2>{{ titles[loop.index] }}</h2>
+			{{ table|safe }}
+			{% endfor %}
+		</div>
+
+	</body>
+</html>
