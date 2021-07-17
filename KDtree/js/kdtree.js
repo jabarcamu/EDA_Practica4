@@ -1,12 +1,14 @@
-k = 2;
+k = 32;
+kn = 5;
 vecinos = 3; // Buscar vecinos más cercanos
 
 class Node {
-    constructor(point, axis) {
+    constructor(point, axis, object) {
         this.point = point;
         this.left = null;
         this.right = null;
         this.axis = axis;
+		this.obj = object
     }
 }
 
@@ -50,6 +52,8 @@ function generate_dot(node) {
     return tmp;
 }
 
+
+// Recibe una lista de puntos([{vector:[1,2,....], obj:{movie}}, ...])
 function build_kdtree(points, depth = 0) {
     // verifica si esta vacio
     var n = points.length;
@@ -59,18 +63,19 @@ function build_kdtree(points, depth = 0) {
 		return null;
 	}
 	if(n==1){
-		return new Node(points[0],axis)
+		return new Node(points[0]['vector'],axis, points[0]['obj'])
 	}
 	var median = Math.floor(points.length/2);
 
 	points.sort(function(a,b){
-		return a[axis] - b[axis];
+		return a['vector'][axis] - b['vector'][axis];
 	});
 
 	var left = points.slice(0,median);
 	var right = points.slice(median+1);
 
-	var node = new Node(points[median].slice(0,k),axis);
+	// var node = new Node(points[median].slice(0,k),axis,);
+	var node = new Node(points[median]['vector'], axis, points[median]['obj']);
 	node.left = build_kdtree(left,depth +1);
 	node.right = build_kdtree(right,depth +1);
 
@@ -184,6 +189,90 @@ function closest_point(node , point , depth = 0, best=null)
 }
 
 
+function closest(point, p1, p2)
+{	
+	if(!p1)
+		return p2;
+
+	if(!p2)
+		return p1;
+
+	if(distanceSquared(point, p1)<distanceSquared(point, p2))
+		return p1; 
+
+	else
+		return p2;
+}
+
+//FInal
+function knearestpoints(node, point, kpoints, resultNodes, depth = 0){
+		
+	//count++;
+	if(node==null)
+		return null;
+
+	var next_branch;
+	var opposite_branch;
+	var temp;
+	var tempNode; 
+
+	if(point[depth % k]< node.point[depth % k])
+	{	next_branch = node.left;
+		opposite_branch = node.rigth;
+	}
+		
+	else		
+	{
+		next_branch = node.rigth;
+		opposite_branch = node.left;	
+	}
+
+
+	closest(point, knearestpoints(next_branch, point, kpoints, resultNodes, depth +1), node.point);
+	//count++;
+	
+
+	if(kpoints.length<kn) {
+		// almacena el valor del nodo
+		tempNode = node;
+		temp = node.point;
+
+		tempNode['point'].push(distanceSquared(point,tempNode['point']));
+		temp.push(distanceSquared(point,temp));
+		
+
+		resultNodes.push(tempNode)
+		kpoints.push(temp);
+
+		const sortDist = (a, b) => a[k] - b[k];
+		const sortDistNode = (a, b) => a['point'][k] - b['point'][k];
+		
+		resultNodes.sort(sortDistNode);
+		kpoints.sort(sortDist);
+
+	} else {	
+		temp = node.point;
+		temp.push(distanceSquared(point,temp));
+		if(temp[k]<kpoints[kpoints.length-1][k])
+		{
+			kpoints.pop();
+		//	console.log("ddddd ",temp);
+			kpoints.push(temp);
+			const sortDist = (a, b) => a[k] - b[k];
+			kpoints.sort(sortDist);
+
+		}
+		
+	}
+	
+
+	if(kpoints.length<kn || kpoints[0][k+1]>=Math.abs(point[depth%k]-node.point[depth%k]))
+	{
+		closest(point, knearestpoints(opposite_branch, point, kpoints, resultNodes, depth +1), node.point);
+
+	}
+	
+}
 
 function masCercano(puntoConsulta, p1, p2) {
     if (!p1) {
