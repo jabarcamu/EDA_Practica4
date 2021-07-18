@@ -93,53 +93,15 @@ function closest_point_brute_force(points, point) {
     var best_distance = null;
     var best_point = null;
     for (let i = 0; i < points.length; i++) {
-        distance = distanceSquared(points[i], point);        
-        //console.log(distance);
+        distance = distanceSquared(points[i], point);                
         if (best_distance === null || distance < best_distance) {
-            best_distance = distance;
-            //best_point = { 'point': points[i], 'distance': distance }
+            best_distance = distance;            
             best_point = points[i];
         }
     } return best_point;
-
-    // var dist=distanceSquared(points[0],point);
-	// var punto=points[0];
-	// for (var i = 1; i < points.length; i++) {
-	// 	var aux=distanceSquared(points[i],point);
-	// 	if(aux<dist){
-	// 		dist=aux;
-	// 		punto=points[i];
-	// 	}
-	// }
-	// return punto;
-
 }
 
 function naive_closest_point(node, point, depth = 0, best = null) {
-    //algorithm
-    //1. best = min(distance(point, node.point), best)
-    //2. chose the branch according to axis per level
-    //3. recursevely call by branch chosed    
-    
-    // if (node === null)
-    //     return best;
-        
-    // var axis = depth % k;
-
-    // var next_best = null; //next best point
-    // var next_branch = null; //next node brach to look for    
-    // if (best === null || (distanceSquared(best, point) > distanceSquared(node.point, point)))
-    //     next_best = node.point;
-    // else
-    //     next_best   = best;    
-
-    // if (point[axis] < node.point[axis])
-    //     next_branch = node.left
-    // else
-    //     next_branch = node.right    
-    
-    // return  naive_closest_point(next_branch, point, depth +1, next_best);    
-
     if(node == null)
         return best;
 
