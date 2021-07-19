@@ -148,14 +148,14 @@ function closest_point(node , point , depth = 0, best=null)
 
 
 function masCercano(puntoConsulta, p1, p2) {
-    if (!p1) {
-      return p2;
-    }
-    if (!p2) {
-      return p1;
-    }
-    return (distanceSquared(puntoConsulta, p1) < distanceSquared(puntoConsulta, p2))? p1 : p2;
-  }
+	if (!p1) {
+		return p2;
+	}
+	if (!p2) {
+		return p1;
+	}
+	return (distanceSquared(puntoConsulta, p1) < distanceSquared(puntoConsulta, p2)) ? p1 : p2;
+}
 
 function knn(node, puntoConsulta, kpoints, depth = 0) {
     if (!node) {
