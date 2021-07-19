@@ -2,11 +2,15 @@
 
 <!doctype html>
 <html>
-	<title> Simple Tables </title>
+	<title> KDTREE-KNN Query Netflix Movies </title>
+	<script src="{{ url_for('static', filename='lib/jquery-3.6.0.min.js') }}"></script> 	
 	<script src="{{ url_for('static', filename='lib/p5.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/sketch.js') }}"></script>
-		
-	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+	<script src="{{ url_for('static', filename='js/kdtree.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/controller.js') }}"></script>
+
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
+
 	<body>
 		<form method="post">
 			<label for="searchmovie">Ingrese Nombre de Pelicula</label>
@@ -14,12 +18,8 @@
 			<input type="submit" value="Buscar Pelicula">
 		</form>
 		<div class=page>
-			<h1> MiTabla </h1>
-			{% for table in tables %}
-			<h2>{{ titles[loop.index] }}</h2>
+			<h1> Muestra de Datos </h1>
 			{{ table|safe }}
-			{% endfor %}
 		</div>
-
 	</body>
 </html>

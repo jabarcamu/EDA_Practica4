@@ -3,21 +3,15 @@
 from flask import Flask,request, flash, render_template, send_file, make_response, url_for, Response
 import pandas as pd
 import io
-from getFeatureVectors import get_listText, getFeaturesFromData
+from getFeatureVectors import getFeaturesFromData
 from ast import literal_eval
 
 
 #cada vez que se inicia la ventana
-data = pd.read_csv("netflixDataset/movies_metadata.csv")
+movieData = pd.read_csv("netflixDataset/Netflix_movies.csv")
+movieData = movieData.rename(columns={'Unnamed: 0': 'index'})
+getFeaturesFromData(movieData)
 
-features = ["genres"]
-
-#********** TODO solo debe ingresar una sola vez *******#
-for feature in features:
-    data[feature]  = data[feature].apply(literal_eval)
-
-for feature in features:
-    data[feature] = data[feature].apply(get_listText)
 
 app = Flask(__name__)
 app.config.from_mapping(
@@ -29,7 +23,7 @@ app.config.from_mapping(
 def index():
     searchmovie="vacio"
     error = "no hay error"
-    res = data[["original_title","overview"]].head(5)
+    res = movieData[["index","movie_name","actors"]].head(5)
 
     #evaluacion de datos
     if request.method == "POST":
@@ -41,12 +35,11 @@ def index():
         flash(error)
     else:
         #realizamos la consulta sobre pandas
-        resMovies = data[data["original_title"].str.match(searchmovie+"*")==True]
-        res = resMovies[["original_title","overview"]]
-        getFeaturesFromData(resMovies)
+        resMovies = movieData[movieData["movie_name"].str.match(searchmovie+"*")==True]
+        res = resMovies[["index","movie_name","actors"]]
         #return redirect(url_for("queryMovies"),resMovies=resMovies)
 
-    return render_template("view.html", tables=[res.to_html(classes=["male"])], titles=["na","Default Netflix Movies"])
+    return render_template("view.html", table=res.to_html(classes=["male"],table_id="mytable"), titles=["na","Default Netflix Movies"])
 
             
 
