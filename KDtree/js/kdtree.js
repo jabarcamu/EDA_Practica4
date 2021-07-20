@@ -1,5 +1,5 @@
 k = 32;
-kn = 5;
+kn = 3;
 vecinos = 3; // Buscar vecinos más cercanos
 
 class Node {
@@ -231,20 +231,19 @@ function knearestpoints(node, point, kpoints, resultNodes, depth = 0){
 	//count++;	
 
 	if(kpoints.length<kn) {
-		// almacena el valor del nodo
-		
-		tempNode = node;
-		temp = node.point;
+		// almacena el valor del nodo				
+		temp = node.point; 
+		tempNode = node; 
 
-		tempNode['point'].push(distanceSquared(point,tempNode['point']));
-		temp.push(distanceSquared(point,temp));
+		tempNode['point'].push(distanceSquared(point,tempNode['point'])); // aqui inserta una distancia
+		temp.push(distanceSquared(point,temp)); //aqui la vuelve a insertar por referencia de objeto, por eso se duplica
 		
 
 		resultNodes.push(tempNode)
 		kpoints.push(temp);
 
-		const sortDist = (a, b) => a[k+1] - b[k+1];
-		const sortDistNode = (a, b) => a['point'][k+1] - b['point'][k+1];
+		const sortDist = (a, b) => a[k] - b[k];
+		const sortDistNode = (a, b) => a['point'][k] - b['point'][k];
 		
 		resultNodes.sort(sortDistNode);
 		kpoints.sort(sortDist);
@@ -256,7 +255,7 @@ function knearestpoints(node, point, kpoints, resultNodes, depth = 0){
 		tempNode['point'].push(distanceSquared(point,tempNode['point']));
 		temp.push(distanceSquared(point,temp));
 
-		if(temp[k+1]<kpoints[kpoints.length-1][k+1])
+		if(temp[k]<kpoints[kpoints.length-1][k])
 		{
 			resultNodes.pop()
 			kpoints.pop();
@@ -264,8 +263,8 @@ function knearestpoints(node, point, kpoints, resultNodes, depth = 0){
 			resultNodes.push(tempNode);
 			kpoints.push(temp);
 
-			const sortDist = (a, b) => a[k+1] - b[k+1];
-			const sortDistNode = (a, b) => a['point'][k+1] - b['point'][k+1];
+			const sortDist = (a, b) => a[k] - b[k];
+			const sortDistNode = (a, b) => a['point'][k] - b['point'][k];
 
 			resultNodes.sort(sortDistNode);
 			kpoints.sort(sortDist);
@@ -273,8 +272,7 @@ function knearestpoints(node, point, kpoints, resultNodes, depth = 0){
 		
 	}
 	
-
-	if(kpoints.length<kn || kpoints[0][k+1]>=Math.abs(point[depth%k]-node.point[depth%k]))
+	if(kpoints.length<kn || kpoints[0][k] >= Math.abs(point[depth%k]-node.point[depth%k]))
 	{
 		closest(point, knearestpoints(opposite_branch, point, kpoints, resultNodes, depth + 1), node.point);
 	}

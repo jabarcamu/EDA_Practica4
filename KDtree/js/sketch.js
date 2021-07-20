@@ -251,6 +251,8 @@ var bagofwords = ['action', 'adventure', 'anime', 'children', 'classic', 'comedi
         console.log(kvecinos);
         console.log(resultNodes);
         console.log(bagofwords.length);
+
+        localStorage.setItem('resultado', JSON.stringify(resultNodes));
       
 }
 
