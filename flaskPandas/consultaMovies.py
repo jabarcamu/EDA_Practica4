@@ -1,17 +1,11 @@
 
-
-from flask import Flask,request, flash, render_template, send_file, make_response, url_for, Response
+from flask import Flask,request, flash, render_template, send_file, make_response, url_for, Response, jsonify
 import pandas as pd
 import io
-from getFeatureVectors import getFeaturesFromData
-from ast import literal_eval
-
+from getFeatureVectors import buildJsonEntireData, buildJsonSelectedMovie
 
 #cada vez que se inicia la ventana
 movieData = pd.read_csv("netflixDataset/Netflix_movies.csv")
-#movieData = movieData.rename(columns={'Unnamed: 0': 'index'})
-getFeaturesFromData(movieData)
-
 
 app = Flask(__name__)
 app.config.from_mapping(
@@ -42,6 +36,15 @@ def index():
     return render_template("view.html", table=res.to_html(classes=["male"],table_id="mytable"), titles=["na","Default Netflix Movies"])
 
             
+@app.route("/add", methods=["POST"])
+def add():
+    #mandamos el json del total de pelicula para el kdtree
+    vectGenTotal,totalMovies_json = buildJsonEntireData(movieData)
+    idMovie = request.form.get("col4");
+    #consultamos mediante el id la pelicula seleccionada
+    selMovie = movieData[movieData["Unnamed: 0"] == int(idMovie)]
+    selMovie_json = buildJsonSelectedMovie(vectGenTotal,selMovie)
+    return jsonify(result=[selMovie_json,totalMovies_json]);
 
 if __name__ == "__main__":
     app.run(debug=True)

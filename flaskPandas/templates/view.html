@@ -2,24 +2,91 @@
 
 <!doctype html>
 <html>
+	<head>
 	<title> KDTREE-KNN Query Netflix Movies </title>
+	<script src="{{ url_for('static', filename='lib/bootstrap.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='lib/jquery-3.6.0.min.js') }}"></script> 	
 	<script src="{{ url_for('static', filename='lib/p5.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/sketch.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/kdtree_new.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/kdtree_art.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/controller.js') }}"></script>
-
+	
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">    
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
-
+	</head>
 	<body>
 		<form method="post">
 			<label for="searchmovie">Ingrese Nombre de Pelicula</label>
 			<input name="searchmovie" id="searchmovie" required>
 			<input type="submit" value="Buscar Pelicula">
 		</form>
+		<span id="result">Holas</span>
+
 		<div class=page>
 			<h1> Muestra de Datos </h1>
 			{{ table|safe }}
 		</div>
+		<div class="row justify-content-center">
+			<div class="col-12">
+				<div id="dibujo"></div>
+			</div>
+
+			<br>
+
+			<div class="col-3">
+				<div id="menu"></div>
+			</div>
+			<div class="col-3">
+				<div id="bar"></div>
+			</div>
+
+		</div>
+
 	</body>
+	<script>
+		
+		function sendSelectedMovie(ev){
+			//console.log($(this).find("input"));
+			ev.preventDefault();                                                    
+			$.ajax({
+				method: "POST",
+				url: {{ url_for("add")|tojson }},                               
+				data: $(this).find("input").serialize()                                       
+			}).done(mostrarResultado);                                              
+		}                                                                               
+
+		function mostrarResultado(data){
+			$("#result").text(data.result[0]); 
+			var dataSelMovie = JSON.parse(data.result[0]);
+			var dataTotalMovies = JSON.parse(data.result[1]);
+			root = build_kdtree(dataTotalMovies["data"]);
+			//console.log(dataSelMovie["data"][0]["vector"]);	
+			kvecinos = [];
+			resultNodes = [];
+			knearestpoints(root,dataSelMovie["data"][0]["vector"],kvecinos,resultNodes,depth=0);
+			console.log(kvecinos);
+			console.log(resultNodes);
+			
+		}
+
+	</script>
+
+	<style>
+	#dibujo {
+		display: table;
+		margin: 0 auto;
+	}
+
+    	#menu {
+	    display: table;
+	    margin: 0 auto;
+    	}  
+
+    	#bar {
+	    display: table;
+	    margin: 0 auto;
+    	} 
+	</style>
+
+
 </html>

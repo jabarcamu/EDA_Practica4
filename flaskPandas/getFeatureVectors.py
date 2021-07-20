@@ -29,39 +29,20 @@ class NumpyEncoder(json.JSONEncoder):
 
         return json.JSONEncoder.default(self, obj)
 
-#construir los vectorizadores
-countvec = CountVec = CountVectorizer(ngram_range=(1,1), stop_words="english", encoding="utf-8")
+#construir el vectorizador
+countvec = CountVectorizer(ngram_range=(1,1), stop_words="english", encoding="utf-8")
+#varialbe general compartida del vectorizador de genero
 
-def getFeaturesFromData(data):
-    #conseguir espciales metadata de la pelicula elegida
+
+def buildJsonEntireData(data):
     
-    #modificando el mismo dataframe original
     #datos textuales
     colGenero = data["genre"]
-    colPais = data["country"]
-    colNombreMovie = data["movie_name"]
-
-
     featuresGenero = countvec.fit_transform(colGenero) 
-    featGenero = pd.DataFrame(featuresGenero.toarray(), columns=countvec.get_feature_names())
-    
-    featuresPais = countvec.fit_transform(colPais) 
-    featPais = pd.DataFrame(featuresPais.toarray(), columns=countvec.get_feature_names())
-    
+    vectGeneroTotal = featuresGenero.toarray()
 
     #datos numericos
     colNumerics = data[["Duration","year","rating"]]
-
-    setColsChoosen = pd.concat([colNumerics, featGenero, featPais, colNombreMovie], axis=1)
-    
-    #We get 133 features
-    print("Shape:",setColsChoosen.shape)
-
-    #divide dataset
-    train, test = train_test_split(setColsChoosen, test_size=0.2, random_state=42)
-    print("Shape Train: ",train.shape)
-    print("Shape Test: ",test.shape)
-
     dataTotal = data.to_json(orient="records")
     parsedObjTotal = json.loads(dataTotal)
 
@@ -75,8 +56,6 @@ def getFeaturesFromData(data):
             "vector": numericData + featuresGenero.toarray()[x].tolist(),
             "obj": parsedObjTotal[x]
         })
-        if x == 0:
-            print(datajson)
 
     
     #usando la clase para tenerlo como un array numpy
@@ -84,8 +63,42 @@ def getFeaturesFromData(data):
     #print(json_data)
     
     #transformando a un archivo json del numpy array
-    with open("training.json", "w") as outfile:
+    with open("json/totalmovies.json", "w") as outfile:
+        outfile.write(json_data)
+    
+    return vectGeneroTotal, json_data
+
+def buildJsonSelectedMovie(vectGenTotal, selectMovie):
+    
+    #conocer el index del dataframe
+    indexDfMovie = selectMovie.index[0]
+    
+    #datos textuales
+    colGenero = selectMovie["genre"]
+    featuresGenero = countvec.fit_transform(colGenero) 
+    
+    dataMovie = selectMovie.to_json(orient="records")
+    parsedObjMovie = json.loads(dataMovie)
+
+    #formando el json data
+    datajson = {"data":[]}
+
+    #recorremos cada registro de data y seleccionar especificas columnas
+    numericData = [selectMovie.loc[indexDfMovie]["Duration"], selectMovie.loc[indexDfMovie]["year"], selectMovie.loc[indexDfMovie]["rating"]]
+    
+    datajson["data"].append({
+        "vector": numericData + vectGenTotal[indexDfMovie].tolist(),
+        "obj": parsedObjMovie[0]
+    })
+    
+    
+    #usando la clase para tenerlo como un array numpy
+    json_data = json.dumps(datajson, cls=NumpyEncoder)
+    #print(json_data)
+    
+    #transformando a un archivo json del numpy array
+    with open("json/selectMovie.json", "w") as outfile:
         outfile.write(json_data)
 
-
+    return json_data
 
