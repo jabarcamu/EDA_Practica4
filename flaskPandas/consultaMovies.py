@@ -12,9 +12,13 @@ app.config.from_mapping(
         SECRET_KEY="dev",
 )
 
+@app.route("/",defaults={"page":"kdtree2d"})
+@app.route("/<any(kdtree2d):page>)")
+def kdtree2d(page):
+    return render_template(f"{page}.html",page=page)
 
-@app.route("/",methods=("GET","POST"))
-def index():
+@app.route("/viewmoviee",methods=("GET","POST"))
+def viewmoviee():
     searchmovie="vacio"
     error = "no hay error"
     res = movieData[["Unnamed: 0","movie_name","actors"]].head(5)
@@ -33,7 +37,7 @@ def index():
         res = resMovies[["Unnamed: 0","movie_name","actors"]]
         #return redirect(url_for("queryMovies"),resMovies=resMovies)
 
-    return render_template("view.html", table=res.to_html(classes=["male"],table_id="mytable"), titles=["na","Default Netflix Movies"])
+    return render_template("/viewmovie.html", table=res.to_html(classes=["male"],table_id="mytable"), titles=["na","Default Netflix Movies"],page="viewmovie")
 
             
 @app.route("/add", methods=["POST"])
@@ -48,5 +52,4 @@ def add():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
 

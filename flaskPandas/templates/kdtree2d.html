@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block intro %}
+	Guia: Aqui podras interactuar con un kdtree tanto de manera espacial
+	asi como generar su graphviz por consola, y poder realizar consultas de los
+	k vecinos a partir de un area rectangular o circular
+	- Puedes definir el nro de puntos a partir del slider
+	- Puedes cambiar el tipo de consulta (circulo o rectangulo)
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col-12">
+		<div id="dibujo"></div>
+	</div>
+
+	<br>
+
+	<div class="col-3">
+		<div id="menu"></div>
+	</div>
+	<div class="col-3">
+		<div id="bar"></div>
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='lib/p5.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/sketch.js') }}"></script>
+{% endblock %}
+
+<style>
+#dibujo {
+	display: table;
+	margin: 0 auto;
+}
+
+#menu {
+	display: table;
+	margin: 0 auto;
+}  
+
+#bar {
+	display: table;
+	margin: 0 auto;
+} 
+</style>
+
+

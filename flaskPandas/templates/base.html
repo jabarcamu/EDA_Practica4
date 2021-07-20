@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+	<head>
+		<title> KDTREE-KNN Query Netflix Movies </title>
+		<script src="{{ url_for('static', filename='lib/bootstrap.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='lib/jquery-3.6.0.min.js') }}"></script> 	
+		<script src="{{ url_for('static', filename='js/kdtree_art.js') }}"></script>
+		
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">    
+		<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
+
+		<!--<link rel="stylesheet" href="https://unpkg.com/sakura.css@1.0.0/css/normalize.css">-->
+		<link rel="stylesheet" href="https://unpkg.com/sakura.css@1.0.0/css/sakura-earthly.css">
+	</head>
+	<body>
+		<style>
+			ul { margin: 0; padding: 0; display: flex; list-style-type: none; }
+			li > * { padding: 1em; }
+			li.active > a { color: #5e5e5e; border-bottom: 2px solid #4a4a4a; }
+			form { display: flex; }
+			label > input { width: 2em; }
+			form > * { padding-right: 1em; }
+			#result { font-weight: bold; }
+		</style>
+		<ul>
+			<li><span>Type:</span>
+			<li class="{% if page == 'kdtree2d' %}active{% endif %}">
+			<a href="{{ url_for('kdtree2d', page='kdtree2d') }}">KDTree2D</a>
+			<li class="active">
+			<a href="{{ url_for('viewmoviee') }}">ViewMovie</a>
+		</ul>
+
+		<hr>
+		<p>{% block intro %}{% endblock %}</p>
+		<hr>
+		<div>{% block content %}{% endblock %}</div>
+		<hr>
+	</body>
+	{% block script %}{% endblock %}
+</html>
