@@ -2,6 +2,7 @@
 
 let root = null;
 let data = [];
+let datos=[];
 let particleCount = 20;
 
 // function setup() {
@@ -212,9 +213,19 @@ function show () {
 
 function buildKdTree(){
     console.log(data.length);
-    console.log(data[0]);
-    root =  build_kdtree(data, depth = 0)      
-    console.log(root.point, ' * ',root.obj);
+    console.log(data[0]['vector']);    
+
+    datos = data.map( item => {
+        return [
+            ...item.vector
+        ]
+    })
+
+    console.log(datos[0], "datos"); 
+
+    root =  build_kdtree(data, depth = 0) 
+      
+    console.log(root);
     executeKnn();
 }
 
@@ -225,16 +236,17 @@ var bagofwords = ['action', 'adventure', 'anime', 'children', 'classic', 'comedi
 
 
     var test = {
-        "vector": [102, 2018, 7.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0], 
-        "obj": {"Unnamed: 0": 1, "movie_name": "#FriendButMarried", "Duration": 102, "year": 2018, "genre": "Dramas, International Movies, Romantic Movies", "director": "Rako Prijanto", "actors": "Adipati Dolken, Vanesha Prescilla, Rendi Jhon, Beby Tsabina, Denira Wiraguna, Refal Hady, Diandra Agatha, Sari Nila", "country": "Indonesia", "rating": 7.0, "enter_in_netflix": "May 21, 2020"}
+        "vector": [130, 2016, 8.2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+        "obj": {"Unnamed: 0": 123, "movie_name": "A Silent Voice", "Duration": 130, "year": 2016, "genre": "Anime Features, International Movies", "director": "Naoko Yamada", "actors": "Miyu Irino, Saori Hayami, Aoi Yuki, Kensho Ono, Yuki Kaneko, Yui Ishikawa, Megumi Han, Toshiyuki Toyonaga, Mayu Matsuoka", "country": "Japan", "rating": 8.2, "enter_in_netflix": "June 5, 2019"}
     };
         
-    var testPoints = [102, 2018, 7.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    //var testPoints = [102, 2018, 7.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         
         kvecinos = [];
         resultNodes = [];        
-        // knearestpoints(root, test['vector'], kvecinos, resultNodes, depth = 0)
-        knearestpoints(root, testPoints, kvecinos, resultNodes, depth = 0)
+        knearestpoints(root, test['vector'], kvecinos, resultNodes, depth = 0)
+        //knearestpoints(root, testPoints, kvecinos, resultNodes, depth = 0)
+        console.log(test, "punto a revisar");
         console.log('Estos son los k vecinos ..................');
         console.log(kvecinos);
         console.log(resultNodes);
@@ -246,7 +258,7 @@ function gettingData(){
         
     var request = new XMLHttpRequest();
     // request.open("GET", "../Database/training.json", false);
-    request.open("GET", "../Database/trainingtfidf.json", false);
+    request.open("GET", "../Database/training.json", false);
     request.send(null);
     var mydata = JSON.parse(request.responseText);    
     data = mydata['data'];
