@@ -1,5 +1,5 @@
 k = 32;
-kn = 5;
+kn = 20;
 vecinos = 3; // Buscar vecinos más cercanos
 
 class Node {
@@ -8,7 +8,6 @@ class Node {
         this.left = null;
         this.right = null;
         this.axis = axis;
-	//objeto de datos adicional para el nodo (genial)
 	this.obj = object
     }
 }
@@ -55,7 +54,7 @@ function generate_dot(node) {
 
 
 // Recibe una lista de puntos([{vector:[1,2,....], obj:{movie}}, ...])
-function build_kdtree(points, depth=0, p5=false) {
+function build_kdtree(points, depth = 0, p5=false) {
     // verifica si esta vacio
     var n = points.length;
 	var axis = depth % k;
@@ -64,26 +63,25 @@ function build_kdtree(points, depth=0, p5=false) {
 		return null;
 	}
 	if(n==1){
-		//trabajando con vector de caracteristicas y el punto u obj adicional
 		if(p5 == false)
-			return new Node(points[0]['vector'],axis, points[0]['obj']);
-		if(p5 == true)
-			return new Node(points[0],axis,null);
+			return new Node(points[0]['vector'],axis, points[0]['obj'])
+		else
+			return new Node(points[0], axis=null);
 	}
+	
 	var median = Math.floor(points.length/2);
 
 	points.sort(function(a,b){
 		if(p5 == false)
 			return a['vector'][axis] - b['vector'][axis];
 		else
-			return a[axis] - b[axis];
+			return a[axis] -b[axis];
 	});
 
 	var left = points.slice(0,median);
 	var right = points.slice(median+1);
 
 	// var node = new Node(points[median].slice(0,k),axis,);
-	// para la creacion del padre igualmente la posicion medianda opbtenemos su vector y obj para construir el nodo
 	if(p5 == false)
 		var node = new Node(points[median]['vector'], axis, points[median]['obj']);
 	else
@@ -217,8 +215,7 @@ function closest(point, p1, p2)
 }
 
 //FInal
-function knearestpoints(node, point, kpoints, resultNodes, depth = 0){
-		
+function knearestpoints(node, point, kpoints, resultNodes, depth = 0){		
 	//count++;
 	if(node==null)
 		return null;
@@ -230,27 +227,25 @@ function knearestpoints(node, point, kpoints, resultNodes, depth = 0){
 
 	if(point[depth % k]< node.point[depth % k])
 	{	next_branch = node.left;
-		opposite_branch = node.rigth;
+		opposite_branch = node.right;
 	}
 		
 	else		
 	{
-		next_branch = node.rigth;
+		next_branch = node.right;
 		opposite_branch = node.left;	
 	}
 
-
 	closest(point, knearestpoints(next_branch, point, kpoints, resultNodes, depth +1), node.point);
-	//count++;
-	
+	//count++;	
 
 	if(kpoints.length<kn) {
-		// almacena el valor del nodo
-		tempNode = node;
-		temp = node.point;
-
-		tempNode['point'].push(distanceSquared(point,tempNode['point']));
-		temp.push(distanceSquared(point,temp));
+		// almacena el valor del nodo				
+		temp = node.point; 
+		tempNode = node; 
+		
+		temp.push(distanceSquared(point,temp)); //aqui la vuelve a insertar por referencia de objeto, por eso se duplica
+		tempNode['point'].push(distanceSquared(point,tempNode['point'])); // aqui inserta una distancia
 		
 
 		resultNodes.push(tempNode)
@@ -263,25 +258,32 @@ function knearestpoints(node, point, kpoints, resultNodes, depth = 0){
 		kpoints.sort(sortDist);
 
 	} else {	
+		tempNode = node;
 		temp = node.point;
+
+		tempNode['point'].push(distanceSquared(point,tempNode['point']));
 		temp.push(distanceSquared(point,temp));
+
 		if(temp[k]<kpoints[kpoints.length-1][k])
 		{
+			resultNodes.pop()
 			kpoints.pop();
 		//	console.log("ddddd ",temp);
+			resultNodes.push(tempNode);
 			kpoints.push(temp);
-			const sortDist = (a, b) => a[k] - b[k];
-			kpoints.sort(sortDist);
 
+			const sortDist = (a, b) => a[k] - b[k];
+			const sortDistNode = (a, b) => a['point'][k] - b['point'][k];
+
+			resultNodes.sort(sortDistNode);
+			kpoints.sort(sortDist);
 		}
 		
 	}
 	
-
-	if(kpoints.length<kn || kpoints[0][k+1]>=Math.abs(point[depth%k]-node.point[depth%k]))
+	if(kpoints.length<kn || kpoints[0][k] >= Math.abs(point[depth%k]-node.point[depth%k]))
 	{
-		closest(point, knearestpoints(opposite_branch, point, kpoints, resultNodes, depth +1), node.point);
-
+		closest(point, knearestpoints(opposite_branch, point, kpoints, resultNodes, depth + 1), node.point);
 	}
 	
 }
@@ -331,6 +333,7 @@ function knn(node, puntoConsulta, kpoints, depth = 0) {
       }
     }
   
+	// Comparar si es necesario retroceder para buscar la distancia mas corta en la consulta.
     if(kpoints.length < vecinos || kpoints[0][2] >= Math.abs(puntoConsulta[depth % k] - node.point[depth%k])) {
       masCercano(puntoConsulta, knn(subTree2, puntoConsulta, kpoints, depth +1), node.point);
     }
@@ -356,315 +359,129 @@ function closer_point(point,p1,p2)
 
 }
 
-function closest_point(node, point, depth = 0, best=null){
+function closest_point(node,point_2,depth = 0)
+{
 
-	if(node == null)
-		return null;
-
-	var next_branch = null;
-	var opposite_branch = null;
-
-	if(point[depth%k] < node.point[depth%k]){
-		next_branch = node.left;
-		opposite_branch = node.rigth;
-
-	}else{
-		next_branch = node.rigth;
-		opposite_branch = node.left;
-	}
-
-
-	best = closest(point, closest_point(next_branch, point, depth+1), node.point);
-
-	if(distanceSquared(point, best) > Math.abs(point[depth%k] - node.point[depth%k]))
+	if (node == null) return ; 
+	//best = min(distanceSquared(node.point,point));
+	var nb = null;
+	var ob = null;
+	if (node.point[node.axis] > point_2[node.axis])
 	{
-		best = closest(point, closest_point(opposite_branch, point, depth+1), node.point);
-	}
-
-	return best;
-	
-}
-
-function naive_closest_point(node, point, depth = 0, best = null){
-
-	if(node == null)
-		return best;
-
-	if(best == null || distanceSquared(node.point, point)<distanceSquared(best, point))
-		best = node.point;
-		
-	if(point[depth % k]< node.point[depth % k])
-		return naive_closest_point(node.left, point, depth +1 , best)
-		
+		//if(node.left) best = min(best, naive_closest_point(node.left,point,depth++,best));
+		nb = node.left;
+		ob = node.right;
+	} 
 	else
-		return naive_closest_point(node.rigth, point, depth +1 , best)  
+	{
+		//if(node.right) best = min(best,naive_closest_point(node.right,point,depth++,best));
+		nb = node.right;
+		ob = node.left;
+	}
+	
+	var best = closer_point(point_2,closer_point(point_2,closest_point(nb,point_2,depth+1),node),best);
+	
+	if (distanceSquared(best.point,point_2) > Math.abs(point_2[node.axis] - node.point[node.axis]))
+	{
+		best2 = closer_point(point_2,closest_point(ob,point_2,depth+1),node);
+		
+	}
+	best = closer_point(point_2,best2,best);
+	
+	
+	//if(best.estado == false) return;
+	return best;	
+}
 
+function closest_n_points(node,point_2,cant_puntos)
+{
+	var closest_points =  [];
+	for (var i = cant_puntos - 1; i >= 0; i--) 
+	{
+		punto = closest_point(node,point_2);
+		if(punto == null) continue;
+		punto.estado = false;
+		closest_points.push(punto);
+	}
+	var ans = []
+	for (var i = closest_points.length - 1; i >= 0; i--) 
+	{
+		punto = closest_points[i];
+		punto.estado = true;
+		ans.push(punto.point);
+	}
+	return ans;
 }
 
 
-
-function distanceSquared(point1, point2){
-	var distance = 0;
-	for (var i = 0 ; i<k; i++)
-		distance +=Math.pow((point1[i]-point2[i]),2);
-
-	return Math.sqrt(distance);
-
-}
-
-function closest_point_brute_force(points, point){
-	dist_less = 100000;
-
-	for(var i of points)
-	{
-		dist = distanceSquared(i, point)
-		//console.log(i,dist)
-
-		if(dist<dist_less)
-		{
-			dist_less = dist;
-			pointless = i;
-		}
-
-	}
-	console.log(dist_less);
-	return pointless;
-}
-//FInal
-function knearestpoints(node, point, kpoints ,depth = 0){
-	
-	//count++;
-	if(node==null)
-		return null;
-
-	var next_branch;
-	var opposite_branch;
-	var temp;
-		
-	if(point[depth % k]< node.point[depth % k])
-	{	next_branch = node.left;
-		opposite_branch = node.rigth;
-	}
-		
-	else		
-	{
-		next_branch = node.rigth;
-		opposite_branch = node.left;	
-	}
-
-
-	closest(point, knearestpoints(next_branch, point, kpoints, depth +1), node.point);
-	//count++;
-	
-
-	if(kpoints.length<kn)
-	{
-		temp = node.point;
-		temp.push(distanceSquared(point,temp));
-		
-		kpoints.push(temp);
-
-		const sortDist = (a, b) => a[k+1] - b[k+1];
-		kpoints.sort(sortDist);
-	}
-
-	else
-	{	
-		temp = node.point;
-		temp.push(distanceSquared(point,temp));
-		if(temp[k+1]<kpoints[kpoints.length-1][k+1])
-		{
-			kpoints.pop();
-		//	console.log("ddddd ",temp);
-			kpoints.push(temp);
-			const sortDist = (a, b) => a[k+1] - b[k+1];
-			kpoints.sort(sortDist);
-
-		}
-		
-	}
-	
-
-	if(kpoints.length<kn || kpoints[0][k+1]>=Math.abs(point[depth%k]-node.point[depth%k]))
-	{
-		closest(point, knearestpoints(opposite_branch, point, kpoints, depth +1), node.point);
-
-	}
-	
-}
-
-function closest_range(point, p1, p2)
-{	
-	if(!p1)
-		return p2;
-
-	if(!p2)
+function closer_point2(point,p1,p2){
+	if(p2==null){
 		return p1;
-
-	if(distanceSquared(point, p1)<distanceSquared(point, p2))
-		return p1; 
-
-	else
-		return p2;
-}
-
-
-
-function range_query_circle(node, point, kpoints , radio, depth = 0)
-{
-	if(node==null)
-		return null;
-
-	var next_branch;
-	var opposite_branch;
-	var temp;
-		
-	if(point[depth % k]< node.point[depth % k])
-	{	next_branch = node.left;
-		opposite_branch = node.rigth;
 	}
-		
-	else		
-	{
-		next_branch = node.rigth;
-		opposite_branch = node.left;	
-	}
-
-
-	closest_range(point, range_query_circle(next_branch, point, kpoints, radio, depth +1), node.point);
-	//count++;
-
-	if(distanceSquared(point,node.point)<radio)
-	{		
-		node.point.push(distanceSquared(point,node.point));
-		kpoints.push(node.point);
-	}
-
-	if(radio>=Math.abs(point[depth%k]-node.point[depth%k]))
-	{
-		closest_range(point, range_query_circle(opposite_branch, point, kpoints, radio, depth +1), node.point);
-
-	}
+	var distance=distanceSquared(p1.point,point);
+	if(distance<distanceSquared(p2.point,point))
+		return p1;
+	return p2;
 	
-
 }
 
 
-function pertenece(point, rectangle)
-{
-	return point[0]>(rectangle.x-rectangle.w) && point[0]<(rectangle.x+rectangle.w) && point[1]>(rectangle.y-rectangle.h) && point[1]<(rectangle.y+rectangle.h)
-}
-
-
-function range_query_circle(node, point, kpoints , radio, depth = 0)
-{
-	if(node==null)
+function range_query_circle ( node , center , radio , queue , depth = 0 ){
+	if (node==null){ 
 		return null;
-
-	var next_branch;
-	var opposite_branch;
-	var temp;
-		
-	if(point[depth % k]< node.point[depth % k])
-	{	next_branch = node.left;
-		opposite_branch = node.rigth;
-	}
-		
-	else		
-	{
-		next_branch = node.rigth;
-		opposite_branch = node.left;	
 	}
 
+	var axis = node.axis ;
+	var nb = null;
+	var ob = null;
 
-	closest_range(point, range_query_circle(next_branch, point, kpoints, radio, depth +1), node.point);
-	//count++;
-
-	if(distanceSquared(point,node.point)<radio)
-	{		
-		node.point.push(distanceSquared(point,node.point));
-		kpoints.push(node.point);
+	if (center[axis] < node.point[axis]){
+		nb=node.left;
+		ob=node.right;
+	} else {
+		nb=node.right;
+		ob=node.left;
 	}
 
-	if(radio>=Math.abs(point[depth%k]-node.point[depth%k]))
-	{
-		closest_range(point, range_query_circle(opposite_branch, point, kpoints, radio, depth +1), node.point);
+	var best=closer_point(center,node,range_query_circle(nb,center,radio,queue,depth+1));
 
+	if(Math.abs(center[axis]-node.point[axis]) <= radio || distanceSquared(center,best.point) > Math.abs(center[axis]-node.point[axis])){
+
+		if(distanceSquared(center,node.point) <= radio){
+
+			queue.push(node.point);
+		}
+
+		best=closer_point(center,best,range_query_circle(ob,center,radio,queue,depth+1));
 	}
+
+	return best ;
+}
+
+function range_query_rect ( node , center , hug , queue , depth = 0 ){
+	if (node==null) return null;
+
+	var axis = node.axis ;
+	var nb = null;
+	var ob = null;
 	
+	if (center[axis]<node.point[axis]){
+		nb=node.left;
+		ob=node.right;
+	} else {
+		nb=node.right;
+		ob=node.left;
+	}
+	var best=closer_point(center,node,range_query_rect(nb,center,hug,queue,depth+1));
 
+	if(Math.abs(center[axis]-node.point[axis])<=hug[axis]*2 || distanceSquared(center,best.point)>Math.abs(center[axis]-node.point[axis])){
+
+		if(Math.abs(center[0]-node.point[0])<=hug[0] && Math.abs(center[1]-node.point[1])<=hug[1]){
+
+			queue.push(node.point);
+		}
+		best=closer_point(center,best,range_query_rect(ob,center,hug,queue,depth+1));
+	}
+
+	return best ;
 }
-
-
-function pertenece(point, rectangle)
-{
-	return point[0]>(rectangle.x-rectangle.w) && point[0]<(rectangle.x+rectangle.w) && point[1]>(rectangle.y-rectangle.h) && point[1]<(rectangle.y+rectangle.h)
-}
-
-
-
-
-function range_query_rect(node, point, kpoints , rectangle, depth = 0)
-{
-	if(node==null)
-		return null;
-
-	var next_branch;
-	var opposite_branch;
-	var temp;
-		
-	if(point[depth % k]< node.point[depth % k])
-	{	next_branch = node.left;
-		opposite_branch = node.rigth;
-	}
-		
-	else		
-	{
-		next_branch = node.rigth;
-		opposite_branch = node.left;	
-	}
-
-
-	closest_range(point, range_query_rect(next_branch, point, kpoints, rectangle, depth +1), node.point);
-	//count++;
-
-	if(node.point[0]>(rectangle.x-rectangle.w) && node.point[0]<(rectangle.x+rectangle.w) && node.point[1]>(rectangle.y-rectangle.h) && node.point[1]<(rectangle.y+rectangle.h))
-	{		
-		//node.point.push(distanceSquared(point,node.point));
-		kpoints.push(node.point);
-	}
-
-	if(rectangle.x+rectangle.w>=Math.abs(point[depth%k]-node.point[depth%k]) || rectangle.x-rectangle.w>=Math.abs(point[depth%k]-node.point[depth%k]) || rectangle.y+rectangle.h>=Math.abs(point[depth%k]-node.point[depth%k]) || rectangle.y-rectangle.h>=Math.abs(point[depth%k]-node.point[depth%k]))
-	{
-		closest_range(point, range_query_rect(opposite_branch, point, kpoints, rectangle, depth +1), node.point);
-
-	}
-	
-
-}
-
-
-function print_nodes(temp, node, side)
-{
-	if(temp)
-	{
-		console.log("\""+node.point[0].toString()+","+node.point[1].toString() +"\"->\""+temp.point[0].toString()+","+ temp.point[1].toString()+"\"")
-
-		print_nodes(temp.left, temp)
-		print_nodes(temp.rigth, temp)
-	}
-}
-
-
-function generate_dot(node)
-{
-	console.log("Digraph G {")
-	if(node)
-	{	
-		print_nodes(node.left,node);
-		print_nodes(node.rigth,node);
-	}
-	console.log("}");
-
-}
-

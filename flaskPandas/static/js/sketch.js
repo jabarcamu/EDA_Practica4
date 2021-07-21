@@ -139,7 +139,6 @@ function draw() {
 		//var point_s2 = [150,300];
 		var point_s2 =   [mouseX, height -mouseY];
 		range_query_circle(root,point_s2,radio,quee2);
-
 		fill(0,255,255,40)
 		circle(point_s2[0], height - point_s2[1], radio*2)
 
