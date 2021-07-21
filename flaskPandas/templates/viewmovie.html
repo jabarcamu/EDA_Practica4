@@ -67,21 +67,31 @@
 
 	function mostrarResultado(data){
 		$("#result").text(data.result[0]); 
+		
+		//las 2 fuentes de datos en  formato json
 		var dataSelMovie = JSON.parse(data.result[0]);
 		var dataTotalMovies = JSON.parse(data.result[1]);
+	
+		//guardar en el local storage
+		window.localStorage.setItem("dataSelMovie", JSON.stringify(dataSelMovie));
+		window.localStorage.setItem("dataTotalMovies", JSON.stringify(dataTotalMovies));
+
+		//para objetos hacemos la prueba con dataSelMovie
+		window.localStorage.setItem("dataSelMovieJson",JSON.stringify(dataSelMovie));
+
 		console.log("Data el primero",dataTotalMovies["data"][0]);
 		root = build_kdtree(dataTotalMovies["data"]);
-		console.log("Root",root);	
+		console.log("Root",root);		
 		kvecinos = [];
 		resultNodes = [];
 		knearestpoints(root,dataSelMovie["data"][0]["vector"],kvecinos,resultNodes,depth=0);
 		console.log("KVECINOS:",kvecinos);
 		$("#result_vecinos").text(kvecinos);
-		
+
 		var txtMoviesRes = "";
 		for(var i=0; i < resultNodes.length; i++)
 			txtMoviesRes += resultNodes[i].obj.movie_name + ",\n";
-		
+			
 		console.log("Nodos:",txtMoviesRes);		
 		$("#result_nodos").text(txtMoviesRes);
 

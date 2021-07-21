@@ -16,3 +16,6 @@ $(document).ready(function(){
 	$('#mytable tbody tr').click(sendSelectedMovie);
 });
 
+
+var dataLocalStorage = window.localStorage.getItem("dataSelMovieJson");
+console.log("LocalStorage-Pelicula Seleccionada:",dataLocalStorage);
