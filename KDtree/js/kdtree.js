@@ -234,9 +234,9 @@ function knearestpoints(node, point, kpoints, resultNodes, depth = 0){
 		// almacena el valor del nodo				
 		temp = node.point; 
 		tempNode = node; 
-
-		tempNode['point'].push(distanceSquared(point,tempNode['point'])); // aqui inserta una distancia
+		
 		temp.push(distanceSquared(point,temp)); //aqui la vuelve a insertar por referencia de objeto, por eso se duplica
+		tempNode['point'].push(distanceSquared(point,tempNode['point'])); // aqui inserta una distancia
 		
 
 		resultNodes.push(tempNode)
@@ -324,6 +324,7 @@ function knn(node, puntoConsulta, kpoints, depth = 0) {
       }
     }
   
+	// Comparar si es necesario retroceder para buscar la distancia mas corta en la consulta.
     if(kpoints.length < vecinos || kpoints[0][2] >= Math.abs(puntoConsulta[depth % k] - node.point[depth%k])) {
       masCercano(puntoConsulta, knn(subTree2, puntoConsulta, kpoints, depth +1), node.point);
     }
