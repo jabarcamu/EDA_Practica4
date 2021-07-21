@@ -322,3 +322,64 @@ function guardar_url(){
     }
 }
 
+
+
+//********* TIMEPO Y BUSQUEDA
+
+var tiempo_limite = 10;
+var tiempo_actual = 0;
+var gen_run_tiempo_parcial = null;
+
+function gen_tiempo_parcial_iniciar(){
+    tiempo_actual = 0;
+    gen_run_tiempo_parcial = setInterval(function() {gen_pausa_verificar_tiempo_parcial();}, 1*1000);
+}
+
+
+function gen_pausa_verificar_tiempo_parcial(){
+    if(tiempo_actual < tiempo_limite){
+        tiempo_actual += 1;
+        $("#codigo_paneles").html("<div class=\"form-group\">.</div><div class=\"form-group\"><center><h2><font color=\"white\"><b>Buscando KD-Tree Knn ... "+tiempo_actual+" / "+tiempo_limite+"</b></font></h2></center><br></div>");
+    }
+    else{
+        //alert("se detuvo la busqueda en: "+tiempo_actual+" seg");
+        //*** detener contador
+        tiempo_actual = 0;
+        clearInterval(gen_run_tiempo_parcial);
+        
+        //**** poner el inicio de busqueda
+        cargar_json();
+    }
+}
+
+
+function buscar_kdtree_knn(){
+    //*** reiniciar variables
+    data_nom = [];
+    data_dur = [];
+    data_yea = [];
+    data_gen = [];
+    data_dir = [];
+    data_act = [];
+    data_cou = [];
+    data_rat = [];
+    data_ent = [];
+    data_nom_selex = [];
+    data_dur_selex = [];
+    data_yea_selex = [];
+    data_gen_selex = [];
+    data_dir_selex = [];
+    data_act_selex = [];
+    data_cou_selex = [];
+    data_rat_selex = [];
+    data_ent_selex = [];
+    limite = 5;
+    rango = 5;
+    cont = 0;
+    //*** esperando
+    $("#codigo_paneles").html("<div class=\"form-group\">.</div><div class=\"form-group\"><center><h2><font color=\"white\"><b>Buscando KD-Tree Knn ...</b></font></h1></center><br></div>");
+    //*** iniciar tiempo parcial
+    gen_tiempo_parcial_iniciar();
+}
+
+
