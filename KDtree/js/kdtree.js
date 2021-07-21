@@ -1,5 +1,5 @@
 k = 32;
-kn = 5;
+kn = 6;
 vecinos = 3; // Buscar vecinos más cercanos
 
 class Node {
@@ -197,7 +197,7 @@ function closest(point, p1, p2)
 	if(!p2)
 		return p1;
 
-	if(distanceSquared(point, p1)<distanceSquared(point, p2))
+	if(distanceSquared(point, p1) <= distanceSquared(point, p2))
 		return p1; 
 
 	else
@@ -216,7 +216,7 @@ function knearestpoints(node, point, kpoints, resultNodes, depth = 0){
 	var temp;
 	var tempNode; 
 
-	if(point[depth % k]< node.point[depth % k])
+	if(point[depth % k] < node.point[depth % k])
 	{	next_branch = node.left;
 		opposite_branch = node.rigth;
 	}
@@ -244,8 +244,8 @@ function knearestpoints(node, point, kpoints, resultNodes, depth = 0){
 		resultNodes.push(tempNode)
 		kpoints.push(temp);
 
-		const sortDist = (a, b) => a[k] - b[k];
-		const sortDistNode = (a, b) => a['point'][k] - b['point'][k];
+		const sortDist = (a, b) => a[k+1] - b[k+1];
+		const sortDistNode = (a, b) => a['point'][k+1] - b['point'][k+1];
 		
 		resultNodes.sort(sortDistNode);
 		kpoints.sort(sortDist);
@@ -253,12 +253,12 @@ function knearestpoints(node, point, kpoints, resultNodes, depth = 0){
 	} else {	
 		temp = node.point;
 		temp.push(distanceSquared(point,temp));
-		if(temp[k]<kpoints[kpoints.length-1][k])
+		if(temp[k+1]<kpoints[kpoints.length-1][k+1])
 		{
 			kpoints.pop();
 		//	console.log("ddddd ",temp);
 			kpoints.push(temp);
-			const sortDist = (a, b) => a[k] - b[k];
+			const sortDist = (a, b) => a[k+1] - b[k+1];
 			kpoints.sort(sortDist);
 
 		}

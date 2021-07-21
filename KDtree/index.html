@@ -1,49 +1,83 @@
 <html>
-  <head>
-    <title>Kdtree</title>
-    <script src="lib/bootstrap.min.js"></script>
-    <script src="lib/p5.min.js"></script>
-    <script src="js/kdtree.js"></script>
-    <script src="js/sketch.js"></script>
-    <!-- <script src="../Database/training.json"></script> -->
 
-    <link rel="stylesheet" href="css/bootstrap.min.css">    
+<head>
+  <title>Kdtree</title>
+  <script src="lib/bootstrap.min.js"></script>
+  <script src="lib/p5.min.js"></script>
+  <script src="js/kdtree.js"></script>
+  <script src="js/sketch.js"></script>
+  <!-- <script src="../Database/training.json"></script> -->
+
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+
+</head>
+
+<body>
+ 
+  <div class="container">
     
-  </head>
-  <body>    
-    <div class="row justify-content-center">
-      <div class="col-12">
-        <div id="dibujo"></div>
-      </div>
+    <div class="container-fluid">           
+
+      <form class="form-inline" name="search" onsubmit="return makeSearch()">
+        <div class="form-group">
+          <label for="duration">Duración:</label>
+          <input type="number" class="form-control" id="durationID">
+        </div>
+        <div class="form-group">
+          <label for="anho">Año:</label>
+          <input type="number" class="form-control" id="anhoID">
+        </div>
+        <div class="form-group">
+          <label for="rating">Rating :</label>
+          <input type="number" class="form-control" id="ratingID">
+        </div>
+        <div class="form-group">
+          <label for="genre">Género:</label>          
+          <select name="genre" class="custom-select mr-sm-2 select" id="inlineFormCustomSelect" multiple>                        
+          </select>
+        </div>             
+        <button type="submit" class="btn btn-primary">Buscar</button>        
+      </form>
       
-      <br>
 
-      <div class="col-3">
-        <div id="menu"></div>
-      </div>
-      <div class="col-3">
-        <div id="bar"></div>
-      </div>
-  
     </div>
-  
+    <div class="container-fluid">
+      <div class="card mb-3" style="max-width: 540px;">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="..." class="img-fluid rounded-start" alt="...">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+              <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </body>
-  
-  <style>
-    #dibujo {
-      display: table;
-      margin: 0 auto;
-    }
-  
-    #menu {
-      display: table;
-      margin: 0 auto;
-    }  
 
-    #bar {
-      display: table;
-      margin: 0 auto;
-    } 
-  </style>
+  </div>
+
+  </div>
+</body>
+
+<style>
+  #dibujo {
+    display: table;
+    margin: 0 auto;
+  }
+
+  #menu {
+    display: table;
+    margin: 0 auto;
+  }
+
+  #bar {
+    display: table;
+    margin: 0 auto;
+  }
+</style>
+
 </html>

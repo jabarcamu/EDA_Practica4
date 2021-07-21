@@ -3,7 +3,8 @@
 let root = null;
 let data = [];
 let particleCount = 20;
-
+var bagofwords = ['action', 'adventure', 'anime', 'children', 'classic', 'comedies', 'comedy', 'cult', 'documentaries', 'dramas', 'faith', 'family', 'fantasy', 'features', 'fi', 'horror', 'independent', 'international', 'lgbtq', 'movies', 'music', 'musicals', 'romantic', 'sci', 'spirituality', 'sports', 'stand', 'thrillers', 'up'];
+var vectorCaractertistico = [];
 // function setup() {
 //     var width = 800;
 // 	var height = 800;
@@ -211,19 +212,18 @@ function show () {
 }
 
 function buildKdTree(){
+    
+
     console.log(data.length);
     console.log(data[0]);
+    console.log('Profundidad ...........',(Math.ceil(Math.log2(data.length)) - 1));
     root =  build_kdtree(data, depth = 0)      
-    console.log(root.point, ' * ',root.obj);
+    console.log(root.obj);
     executeKnn();
 }
 
 function executeKnn(){
             
-
-var bagofwords = ['action', 'adventure', 'anime', 'children', 'classic', 'comedies', 'comedy', 'cult', 'documentaries', 'dramas', 'faith', 'family', 'fantasy', 'features', 'fi', 'horror', 'independent', 'international', 'lgbtq', 'movies', 'music', 'musicals', 'romantic', 'sci', 'spirituality', 'sports', 'stand', 'thrillers', 'up'];
-
-
     var test = {
         "vector": [102, 2018, 7.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0], 
         "obj": {"Unnamed: 0": 1, "movie_name": "#FriendButMarried", "Duration": 102, "year": 2018, "genre": "Dramas, International Movies, Romantic Movies", "director": "Rako Prijanto", "actors": "Adipati Dolken, Vanesha Prescilla, Rendi Jhon, Beby Tsabina, Denira Wiraguna, Refal Hady, Diandra Agatha, Sari Nila", "country": "Indonesia", "rating": 7.0, "enter_in_netflix": "May 21, 2020"}
@@ -233,9 +233,10 @@ var bagofwords = ['action', 'adventure', 'anime', 'children', 'classic', 'comedi
         
         kvecinos = [];
         resultNodes = [];        
-        // knearestpoints(root, test['vector'], kvecinos, resultNodes, depth = 0)
-        knearestpoints(root, testPoints, kvecinos, resultNodes, depth = 0)
+        knearestpoints(root, test['vector'], kvecinos, resultNodes, depth = 0)
+        // knearestpoints(root, testPoints, kvecinos, resultNodes, depth = 0)
         console.log('Estos son los k vecinos ..................');
+        console.log(test);
         console.log(kvecinos);
         console.log(resultNodes);
         console.log(bagofwords.length);
@@ -245,10 +246,73 @@ var bagofwords = ['action', 'adventure', 'anime', 'children', 'classic', 'comedi
 function gettingData(){
         
     var request = new XMLHttpRequest();
-    // request.open("GET", "../Database/training.json", false);
-    request.open("GET", "../Database/trainingtfidf.json", false);
+    request.open("GET", "../Database/training.json", false);
+    // request.open("GET", "../Database/trainingtfidf.json", false);
     request.send(null);
     var mydata = JSON.parse(request.responseText);    
     data = mydata['data'];
-    buildKdTree();
+    console.log('tama .......', data.length);
+    console.log('obj .......', data[0]);
+    
+    // crear las lista de generos
+    createListGenre();
+
+    // buildKdTree();
 }
+
+
+function makeSearch() {
+    
+    
+    var duration = document.getElementById("durationID").value;
+    var anhio = document.getElementById("anhoID").value;
+    var rating = document.getElementById("ratingID").value;
+    var genre = document.getElementById("inlineFormCustomSelect").value;
+    
+    console.log(duration);
+    console.log(anhio);
+    console.log(rating);
+    console.log(genre);
+
+    
+
+    // // Buscar resultados de busqueda
+    // kvecinos = [];
+    // resultNodes = [];      
+    
+    // // resetenado la lista
+    // vectorCaractertistico = [];
+    // vectorCaractertistico = new Array(bagofwords.length + 3).fill(0);
+    // vectorCaractertistico[0] = parseInt(duration);
+    // vectorCaractertistico[1] = parseInt(anhio);
+    // vectorCaractertistico[2] = parseFloat(rating);
+    // vectorCaractertistico[parseInt(genre)  + 3] = 1;
+    
+    // var testPoints = [102, 2018, 7.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, 0, 0, 0, 0, 1.0, 0, 2.0, 0, 3.0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+
+    // knearestpoints(root, vectorCaractertistico, kvecinos, resultNodes, depth = 0)
+    // // knearestpoints(root, testPoints, kvecinos, resultNodes, depth = 0)
+
+    // console.log(vectorCaractertistico);
+    // console.log(vectorCaractertistico.length);
+    // console.log(kvecinos);
+    // console.log(resultNodes);
+
+    return false;
+  }
+
+  function createListGenre(){
+    console.log('createListGenre');    
+    var select = document.getElementById("inlineFormCustomSelect"); 
+    
+
+    // Optional: Clear all existing options first:
+    // select.innerHTML = "";
+    // Populate list with options:
+    for(var i = 0; i < bagofwords.length; i++) {
+        var opt = bagofwords[i];
+        select.innerHTML += "<option value=\"" + i + "\">" + opt + "</option>";
+    }
+
+  }
