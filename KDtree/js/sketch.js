@@ -261,6 +261,8 @@ function gettingData(){
 
 
 function makeSearch() {
+
+    
     
     console.log('Make Searchhhhhhhhhhhhhhhhhhhhhhhhh .............');
     var duration = document.getElementById("durationID").value;
@@ -273,6 +275,7 @@ function makeSearch() {
     console.log(parseInt(rating));
     console.log(parseInt(genre));
 
+    gettingData();
     
 
     // Buscar resultados de busqueda
