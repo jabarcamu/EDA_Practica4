@@ -213,13 +213,12 @@ function show () {
 
 function buildKdTree(){
     
-
+    console.log('buildKdTree ................');
     console.log(data.length);
     console.log(data[0]);
     console.log('Profundidad ...........',(Math.ceil(Math.log2(data.length)) - 1));
     root =  build_kdtree(data, depth = 0)      
-    console.log(root.obj);
-    executeKnn();
+    console.log(root);    
 }
 
 function executeKnn(){
@@ -257,47 +256,49 @@ function gettingData(){
     // crear las lista de generos
     createListGenre();
 
-    // buildKdTree();
+    buildKdTree();
 }
 
 
 function makeSearch() {
     
-    
+    console.log('Make Searchhhhhhhhhhhhhhhhhhhhhhhhh .............');
     var duration = document.getElementById("durationID").value;
     var anhio = document.getElementById("anhoID").value;
     var rating = document.getElementById("ratingID").value;
     var genre = document.getElementById("inlineFormCustomSelect").value;
-    
-    console.log(duration);
-    console.log(anhio);
-    console.log(rating);
-    console.log(genre);
+    console.log('makeSearch input');
+    console.log(parseInt(duration));
+    console.log(parseInt(anhio));
+    console.log(parseInt(rating));
+    console.log(parseInt(genre));
 
     
 
-    // // Buscar resultados de busqueda
-    // kvecinos = [];
-    // resultNodes = [];      
+    // Buscar resultados de busqueda
+    kvecinos = [];
+    resultNodes = [];      
     
-    // // resetenado la lista
-    // vectorCaractertistico = [];
-    // vectorCaractertistico = new Array(bagofwords.length + 3).fill(0);
-    // vectorCaractertistico[0] = parseInt(duration);
-    // vectorCaractertistico[1] = parseInt(anhio);
-    // vectorCaractertistico[2] = parseFloat(rating);
-    // vectorCaractertistico[parseInt(genre)  + 3] = 1;
+    // resetenado la lista
+    vectorCaractertistico = [];
+    vectorCaractertistico = new Array(bagofwords.length + 3).fill(0);
+    vectorCaractertistico[0] = parseInt(duration);
+    vectorCaractertistico[1] = parseInt(anhio);
+    vectorCaractertistico[2] = parseFloat(rating);
+    vectorCaractertistico[parseInt(genre) + 3] = 1;
     
-    // var testPoints = [102, 2018, 7.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, 0, 0, 0, 0, 1.0, 0, 2.0, 0, 3.0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
+    // vectorCaractertistico = [60, 2018, 7.0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.1, 1, 1, 1, 1, 1, 1.0, 0, 2.0, 0, 3.0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    // vectorCaractertistico = [102, 2018, 7.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, 0, 0, 0, 0, 1.0, 0, 2.0, 0, 3.0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    // vectorCaractertistico = [102, 2018, 7.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, 0, 0, 0, 0, 1.0, 0, 2.0, 0, 3.0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
     // knearestpoints(root, vectorCaractertistico, kvecinos, resultNodes, depth = 0)
-    // // knearestpoints(root, testPoints, kvecinos, resultNodes, depth = 0)
+    knearestpoints(root, vectorCaractertistico, kvecinos, resultNodes, depth = 0)
 
-    // console.log(vectorCaractertistico);
-    // console.log(vectorCaractertistico.length);
-    // console.log(kvecinos);
-    // console.log(resultNodes);
+    console.log('makeSearch output');
+    console.log(vectorCaractertistico);
+    console.log(vectorCaractertistico.length);
+    console.log(kvecinos);
+    console.log(resultNodes);
 
     return false;
   }

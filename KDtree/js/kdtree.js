@@ -1,5 +1,5 @@
 k = 32;
-kn = 6;
+kn = 10;
 vecinos = 3; // Buscar vecinos más cercanos
 
 class Node {
@@ -65,6 +65,7 @@ function build_kdtree(points, depth = 0) {
 	if(n==1){
 		return new Node(points[0]['vector'],axis, points[0]['obj'])
 	}
+	
 	var median = Math.floor(points.length/2);
 
 	points.sort(function(a,b){
@@ -197,7 +198,7 @@ function closest(point, p1, p2)
 	if(!p2)
 		return p1;
 
-	if(distanceSquared(point, p1) <= distanceSquared(point, p2))
+	if(distanceSquared(point, p1)<distanceSquared(point, p2))
 		return p1; 
 
 	else
@@ -205,8 +206,7 @@ function closest(point, p1, p2)
 }
 
 //FInal
-function knearestpoints(node, point, kpoints, resultNodes, depth = 0){
-		
+function knearestpoints(node, point, kpoints, resultNodes, depth = 0){		
 	//count++;
 	if(node==null)
 		return null;
@@ -216,60 +216,65 @@ function knearestpoints(node, point, kpoints, resultNodes, depth = 0){
 	var temp;
 	var tempNode; 
 
-	if(point[depth % k] < node.point[depth % k])
+	if(point[depth % k]< node.point[depth % k])
 	{	next_branch = node.left;
-		opposite_branch = node.rigth;
+		opposite_branch = node.right;
 	}
 		
 	else		
 	{
-		next_branch = node.rigth;
+		next_branch = node.right;
 		opposite_branch = node.left;	
 	}
 
-
 	closest(point, knearestpoints(next_branch, point, kpoints, resultNodes, depth +1), node.point);
-	//count++;
-	
+	//count++;	
 
 	if(kpoints.length<kn) {
-		// almacena el valor del nodo
-		tempNode = node;
-		temp = node.point;
+		// almacena el valor del nodo				
+		temp = node.point; 
+		tempNode = node; 
 
-		tempNode['point'].push(distanceSquared(point,tempNode['point']));
-		temp.push(distanceSquared(point,temp));
+		tempNode['point'].push(distanceSquared(point,tempNode['point'])); // aqui inserta una distancia
+		temp.push(distanceSquared(point,temp)); //aqui la vuelve a insertar por referencia de objeto, por eso se duplica
 		
 
 		resultNodes.push(tempNode)
 		kpoints.push(temp);
 
-		const sortDist = (a, b) => a[k+1] - b[k+1];
-		const sortDistNode = (a, b) => a['point'][k+1] - b['point'][k+1];
+		const sortDist = (a, b) => a[k] - b[k];
+		const sortDistNode = (a, b) => a['point'][k] - b['point'][k];
 		
 		resultNodes.sort(sortDistNode);
 		kpoints.sort(sortDist);
 
 	} else {	
+		tempNode = node;
 		temp = node.point;
+
+		tempNode['point'].push(distanceSquared(point,tempNode['point']));
 		temp.push(distanceSquared(point,temp));
-		if(temp[k+1]<kpoints[kpoints.length-1][k+1])
+
+		if(temp[k]<kpoints[kpoints.length-1][k])
 		{
+			resultNodes.pop()
 			kpoints.pop();
 		//	console.log("ddddd ",temp);
+			resultNodes.push(tempNode);
 			kpoints.push(temp);
-			const sortDist = (a, b) => a[k+1] - b[k+1];
-			kpoints.sort(sortDist);
 
+			const sortDist = (a, b) => a[k] - b[k];
+			const sortDistNode = (a, b) => a['point'][k] - b['point'][k];
+
+			resultNodes.sort(sortDistNode);
+			kpoints.sort(sortDist);
 		}
 		
 	}
 	
-
-	if(kpoints.length<kn || kpoints[0][k+1]>=Math.abs(point[depth%k]-node.point[depth%k]))
+	if(kpoints.length<kn || kpoints[0][k] >= Math.abs(point[depth%k]-node.point[depth%k]))
 	{
-		closest(point, knearestpoints(opposite_branch, point, kpoints, resultNodes, depth +1), node.point);
-
+		closest(point, knearestpoints(opposite_branch, point, kpoints, resultNodes, depth + 1), node.point);
 	}
 	
 }
