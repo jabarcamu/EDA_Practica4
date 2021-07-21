@@ -49,9 +49,6 @@
 	</div>
 </div>
 
-
-
-
 {%endblock%}
 
 {% block script %}
@@ -72,19 +69,20 @@
 		$("#result").text(data.result[0]); 
 		var dataSelMovie = JSON.parse(data.result[0]);
 		var dataTotalMovies = JSON.parse(data.result[1]);
+		console.log("Data el primero",dataTotalMovies["data"][0]);
 		root = build_kdtree(dataTotalMovies["data"]);
-		//console.log(dataSelMovie["data"][0]["vector"]);	
+		console.log("Root",root);	
 		kvecinos = [];
 		resultNodes = [];
 		knearestpoints(root,dataSelMovie["data"][0]["vector"],kvecinos,resultNodes,depth=0);
-		console.log(kvecinos);
+		console.log("KVECINOS:",kvecinos);
 		$("#result_vecinos").text(kvecinos);
 		
 		var txtMoviesRes = "";
 		for(var i=0; i < resultNodes.length; i++)
 			txtMoviesRes += resultNodes[i].obj.movie_name + ",\n";
 		
-		console.log(txtMoviesRes);		
+		console.log("Nodos:",txtMoviesRes);		
 		$("#result_nodos").text(txtMoviesRes);
 
 }

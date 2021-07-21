@@ -30,7 +30,9 @@ class NumpyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 #construir el vectorizador
-countvec = CountVectorizer(ngram_range=(1,1), stop_words="english", encoding="utf-8")
+#countvec = CountVectorizer(ngram_range=(1,1), stop_words="english", encoding="utf-8")
+countvec = CountVectorizer()
+
 #varialbe general compartida del vectorizador de genero
 
 
@@ -40,6 +42,7 @@ def buildJsonEntireData(data):
     colGenero = data["genre"]
     featuresGenero = countvec.fit_transform(colGenero) 
     vectGeneroTotal = featuresGenero.toarray()
+    print("lenGenero:",featuresGenero.shape)
 
     #datos numericos
     colNumerics = data[["Duration","year","rating"]]

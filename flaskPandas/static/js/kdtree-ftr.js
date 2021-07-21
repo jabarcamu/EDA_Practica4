@@ -1,5 +1,5 @@
 k = 32;
-kn = 20;
+kn = 3;
 vecinos = 3; // Buscar vecinos más cercanos
 
 class Node {
