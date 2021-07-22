@@ -39,6 +39,12 @@ def viewmoviee():
 
     return render_template("/viewmovie.html", table=res.to_html(classes=["male"],table_id="mytable"), titles=["na","Default Netflix Movies"],page="viewmovie")
 
+#detail movie (author-Timoty)
+@app.route("/detailmovie",methods=("GET","POST"))
+def detailmovie():
+    return render_template("/detailmovie.html", page="detailmovie")
+
+
             
 @app.route("/add", methods=["POST"])
 def add():

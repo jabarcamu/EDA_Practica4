@@ -2,15 +2,20 @@
 <html>
 	<head>
 		<title> KDTREE-KNN Query Netflix Movies </title>
-		<script src="{{ url_for('static', filename='lib/bootstrap.min.js') }}"></script>
-		<script src="{{ url_for('static', filename='lib/jquery-3.6.0.min.js') }}"></script> 	
+		<script src="{{ url_for('static', filename='lib/jquery.min.apari.js') }}"></script>				
+		<script src="https://apis.google.com/js/api.js"></script>
+		<script src="https://apis.google.com/js/client.js?onload=googleApiClientReady">   </script>
+		<script src="{{ url_for('static', filename='lib/bootstrap.min.apari.js') }}"></script>
+		<script src="{{ url_for('static', filename='lib/custom.min.js') }}"></script>
+
+
 		<script src="{{ url_for('static', filename='js/kdtree-ftr.js') }}"></script>
-		
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">    
 		<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
 
+	
 		<!--<link rel="stylesheet" href="https://unpkg.com/sakura.css@1.0.0/css/normalize.css">-->
-		<link rel="stylesheet" href="https://unpkg.com/sakura.css@1.0.0/css/sakura-earthly.css">
+		<!--<link rel="stylesheet" href="https://unpkg.com/sakura.css@1.0.0/css/sakura-earthly.css">-->
 	</head>
 	<body>
 		<style>
@@ -26,8 +31,9 @@
 			<li><span>Type:</span>
 			<li class="{% if page == 'kdtree2d' %}active{% endif %}">
 			<a href="{{ url_for('kdtree2d', page='kdtree2d') }}">KDTree2D</a>
-			<li class="active">
+			<li class="{% if page == 'viewmovie' %} active {% endif %}">
 			<a href="{{ url_for('viewmoviee') }}">ViewMovie</a>
+			<a href="{{ url_for('detailmovie')}}">DetailMovie</a>
 		</ul>
 
 		<hr>

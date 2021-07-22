@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+
+{% block intro%}
+
+Guia: La visualizacion de detalle para la busqueda de peliculas con la valoracion y diferencia respectiva en  el panel derecho, y las caracteristicas de los vecinos encontrados por el KNN ademas de porder visualizar el video respectivo, tiene la opcion de ingresar url en caso de no contar con el video y poder observalo en el sitio.
+
+{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/custom.min.css') }}">
+
+
+<div class="modal fade bd-example-modal-sm" id="modal_url" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<!-- CABECERA -->
+			<div class="modal-header">
+				<label class="control-label col-md-12 col-sm-12 col-xs-12" for="first-name">Agregar URL<span class="required"></span></label>
+			</div>
+			<!-- CUERPO -->
+			<div class="modal-body">
+				<form  id="demo-form-mod-ref" data-parsley-validate class="form-horizontal form-label-left">
+					<!-- AGREGAR EDITAR -->
+					<div class="col-md-12 col-sm-12 col-xs-12">	
+
+						<div class="form-group">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12 input-sm"  style="text-align:left;">
+								Iframe</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<input type="text" class="form-control input-sm" id="mod_cod" value="Nuevo" disabled>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12 input-sm"  style="text-align:left;">
+								Url</label>
+							<div class="col-md-9 col-sm-9 col-xs-12">
+								<input type="text" class="form-control input-sm" id="mod_url" placeholder="Url">
+							</div>
+						</div>
+
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-sm btn-success" data-dismiss="modal" onclick="guardar_url()">guardar</button>
+				<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">cancelar</button>
+			</div>
+		</div>
+	</div>
+</div>      
+
+
+
+<div id="container">
+	<div class="col-md-1 col-sm-1 col-xs-12"></div>
+	<div class="col-md-10 col-sm-10 col-xs-12">
+
+
+		<div class="col-md-12 col-sm-12 col-sm-12">
+			<h3><font color="white">Algoritmo KD-Tree Knn Netflix (grupo 9)</font></h3>
+		</div>
+
+		<div class="col-md-12 col-sm-12 col-sm-12">
+			<div class="col-md-3 col-sm-3 col-sm-12"></div>
+			<div class="col-md-8 col-sm-8 col-sm-12">
+				<div class="x_panel">
+					<label class="control-label col-md-2 col-sm-2 col-xs-12" style="text-align:left; color: blue;">Busqueda</label>
+					<div class="col-md-6 col-sm-6 col-xs-12">
+						<input type="text" class="form-control input-sm" id="texto_buscar" placeholder="Escriba un Texto" >
+					</div>
+						<div class="col-md-4 col-sm-4 col-sm-12">
+							<button class="btn btn-primary btn-sm" onclick="buscar_kdtree_knn();">Buscar</button>
+							<button class="btn btn-success btn-sm" onclick="cargar_json();">Actualizar</button>
+						</div>
+				</div>
+			</div>
+
+			<div class="col-md-3 col-sm-3 col-sm-12"></div>
+		</div> 
+
+
+		<!-- CODIGOO -->
+		<!-- CODIGOO -->
+		<!-- CODIGOO -->
+		<div id="codigo_paneles"></div>
+
+		<!-- PELICULA 5 -->
+		<div class="col-md-12 col-sm-12 col-sm-12">
+			<div class="col-md-3 col-sm-3 col-sm-12"></div>
+			<div class="col-md-9 col-sm-9 col-sm-12">
+				<button class="btn btn-warning" onclick="agregar_selex()"><b>Ver 5 mas ...</b></button>
+			</div>    
+		</div>
+
+
+
+		<!-- PELICULA 1 -->
+		<div class="col-md-12 col-sm-12 col-sm-12" id="panel_ejemplo_1">
+			<div class="col-md-3 col-sm-3 col-sm-12">
+				<div class="x_panel">
+					<div class="x_title">
+						Parametros de Valoracion
+					</div>
+				</div>
+			</div>    
+			<div class="col-md-9 col-sm-9 col-sm-12">
+				<div class="x_panel">
+					<div class="x_title">
+						<div class="panel-title pull-left"><b>Lucifer</b></div>
+						<div class="panel-title pull-right"><b>Valoracion:&nbsp;&nbsp;<font color="red">500</font></b></div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="col-md-5 col-sm-5 col-sm-12">
+						<!-- Estreno -->
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left; color: blue;">Estreno:</label>
+						<label class="control-label col-md-9 col-sm-9 col-xs-12" style="text-align:left; font-style: italic; color: black;">Fecha 1</label>
+						<!-- Genero -->
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left; color: blue;">Genero:</label>
+						<label class="control-label col-md-9 col-sm-9 col-xs-12" style="text-align:left; font-style: italic; color: black;">Genero 1</label>
+						<!-- Actores -->
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left; color: blue;">Actores:</label>
+						<label class="control-label col-md-9 col-sm-9 col-xs-12" style="text-align:left; font-style: italic; color: black;">Actores 1</label>
+						<!-- Descripcion -->
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left; color: blue;">Descrip:</label>
+						<label class="control-label col-md-9 col-sm-9 col-xs-12" style="text-align:left; font-style: italic; color: black;">Descripcion 1</label>
+						<!-- Director -->
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left; color: blue;">Director:</label>
+						<label class="control-label col-md-9 col-sm-9 col-xs-12" style="text-align:left; font-style: italic; color: black;">Director 1</label>
+						<!-- Trailer -->
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left; color: blue;">Trailer:</label>
+						<div class="col-md-9 col-sm-9 col-xs-12">
+							<form action="http://www.youtube.com/results" method="get" target="_blank" class="form-inline">
+								<input name="search_query" type="text" maxlength="128" value="Lucifer Trailer Netflix" id="texto_buscar_1"/>
+								<button class="btn btn-primary btn-xs">Agregar</button>
+								<input class="btn btn-success btn-xs" type="submit" value="Buscar" />
+							</form>
+						</div>
+					</div>
+					<div class="col-md-7 col-sm-7 col-xs-12">
+						<!--<iframe src="https://www.youtube.com/embed/N_kvE_T8Nxo"  -->
+						<!--<iframe src="https://www.youtube.com/watch?v=OQANizDRuPg"-->
+						<iframe src="https://www.youtube.com/embed/OQANizDRuPg"
+							frameborder="0"
+							style="width: 100%; height: 250px;">
+						</iframe>
+					</div>
+				</div>
+			</div>    
+		</div>
+
+
+		<!-- PELICULA 2 -->
+		<div class="col-md-12 col-sm-12 col-sm-12" id="panel_ejemplo_2">
+			<div class="col-md-3 col-sm-3 col-sm-12">
+				<div class="x_panel">
+					<div class="x_title">
+						Parametros de Valoracion
+					</div>
+				</div>
+			</div>    
+			<div class="col-md-9 col-sm-9 col-sm-12">
+				<div class="x_panel">
+					<div class="x_title">
+						<div class="panel-title pull-left"><b>TITULO</b></div>
+						<div class="panel-title pull-right"><b>Valoracion:&nbsp;&nbsp;<font color="red">RATING</font></b></div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="col-md-5 col-sm-5 col-sm-12">
+						<!-- Estreno -->
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left; color: blue;">Duracion:</label>
+						<label class="control-label col-md-9 col-sm-9 col-xs-12" style="text-align:left; font-style: italic; color: black;">TEXTO</label>
+						<!-- Genero -->
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left; color: blue;">Year:</label>
+						<label class="control-label col-md-9 col-sm-9 col-xs-12" style="text-align:left; font-style: italic; color: black;">TEXTO</label>
+						<!-- Actores -->
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left; color: blue;">Genero:</label>
+						<label class="control-label col-md-9 col-sm-9 col-xs-12" style="text-align:left; font-style: italic; color: black;">TEXTO</label>
+						<!-- Descripcion -->
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left; color: blue;">Director:</label>
+						<label class="control-label col-md-9 col-sm-9 col-xs-12" style="text-align:left; font-style: italic; color: black;">TEXTO</label>
+						<!-- Director -->
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left; color: blue;">Pais:</label>
+						<label class="control-label col-md-9 col-sm-9 col-xs-12" style="text-align:left; font-style: italic; color: black;">TEXTO</label>
+						<!-- Rating -->
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left; color: blue;">Rating:</label>
+						<label class="control-label col-md-9 col-sm-9 col-xs-12" style="text-align:left; font-style: italic; color: black;">TEXTO</label>
+						<!-- Enter -->
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left; color: blue;">Enter:</label>
+						<label class="control-label col-md-9 col-sm-9 col-xs-12" style="text-align:left; font-style: italic; color: black;">TEXTO</label>
+						<!-- Trailer -->
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left; color: blue;">Trailer:</label>
+						<div class="col-md-9 col-sm-9 col-xs-12">
+							<form action="http://www.youtube.com/results" method="get" target="_blank" class="form-inline">
+								<input name="search_query" type="text" maxlength="128" value="TITULO Trailer Netflix" id="texto_buscar_2"/>
+								<button class="btn btn-primary btn-xs">Agregar</button>
+								<input class="btn btn-success btn-xs" type="submit" value="Buscar" />
+							</form>
+						</div>
+					</div>
+					<div class="col-md-7 col-sm-7 col-xs-12">
+						<iframe src="https://www.youtube.com/embed/c5Py8ocxPok"
+							frameborder="0"
+							style="width: 100%; height: 250px;">
+						</iframe>
+					</div>
+				</div>
+			</div>    
+		</div>
+
+
+
+	</div>
+	<div class="col-md-1 col-sm-1 col-xs-12"></div>
+</div> 
+
+<div class="col-md-12 col-sm-12 col-sm-12">
+	<br><br><br><br>
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+
+{% endblock %}
+
+

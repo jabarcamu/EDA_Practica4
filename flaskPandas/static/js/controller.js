@@ -17,5 +17,3 @@ $(document).ready(function(){
 });
 
 
-var dataLocalStorage = window.localStorage.getItem("dataSelMovieJson");
-console.log("LocalStorage-Pelicula Seleccionada:",dataLocalStorage);
