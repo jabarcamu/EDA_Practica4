@@ -279,7 +279,7 @@ function makeSearch() {
     // console.log(parseInt(rating));
     // console.log(parseInt(genre));
 
-    gettingData();
+    // gettingData();
     
 
     // // Buscar resultados de busqueda
