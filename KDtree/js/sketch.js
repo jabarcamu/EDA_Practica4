@@ -1,7 +1,11 @@
 
 
+let matching = 0;
+let countComparing = 0;
+let dataClone = [];
 let root = null;
 let data = [];
+let dimentionVector = 32;
 let particleCount = 20;
 var bagofwords = ['action', 'adventure', 'anime', 'children', 'classic', 'comedies', 'comedy', 'cult', 'documentaries', 'dramas', 'faith', 'family', 'fantasy', 'features', 'fi', 'horror', 'independent', 'international', 'lgbtq', 'movies', 'music', 'musicals', 'romantic', 'sci', 'spirituality', 'sports', 'stand', 'thrillers', 'up'];
 var vectorCaractertistico = [];
@@ -262,43 +266,51 @@ function gettingData(){
 
 function makeSearch() {
     
-    console.log('Make Searchhhhhhhhhhhhhhhhhhhhhhhhh .............');
-    var duration = document.getElementById("durationID").value;
-    var anhio = document.getElementById("anhoID").value;
-    var rating = document.getElementById("ratingID").value;
-    var genre = document.getElementById("inlineFormCustomSelect").value;
-    console.log('makeSearch input');
-    console.log(parseInt(duration));
-    console.log(parseInt(anhio));
-    console.log(parseInt(rating));
-    console.log(parseInt(genre));
+    // console.log('Make Searchhhhhhhhhhhhhhhhhhhhhhhhh .............');
+    // var duration = document.getElementById("durationID").value;
+    // var anhio = document.getElementById("anhoID").value;
+    // var rating = document.getElementById("ratingID").value;
+    // var genre = document.getElementById("inlineFormCustomSelect").value;
+    // console.log('makeSearch input');
+    // console.log(parseInt(duration));
+    // console.log(parseInt(anhio));
+    // console.log(parseInt(rating));
+    // console.log(parseInt(genre));
 
     
 
-    // Buscar resultados de busqueda
-    kvecinos = [];
-    resultNodes = [];      
+    // // Buscar resultados de busqueda
+    // kvecinos = [];
+    // resultNodes = [];      
     
-    // resetenado la lista
-    vectorCaractertistico = [];
-    vectorCaractertistico = new Array(bagofwords.length + 3).fill(0);
-    vectorCaractertistico[0] = parseInt(duration);
-    vectorCaractertistico[1] = parseInt(anhio);
-    vectorCaractertistico[2] = parseFloat(rating);
-    vectorCaractertistico[parseInt(genre) + 3] = 1;
+    // // resetenado la lista
+    // vectorCaractertistico = [];
+    // vectorCaractertistico = new Array(bagofwords.length + 3).fill(0);
+    // vectorCaractertistico[0] = parseInt(duration);
+    // vectorCaractertistico[1] = parseInt(anhio);
+    // vectorCaractertistico[2] = parseFloat(rating);
+    // vectorCaractertistico[parseInt(genre) + 3] = 1;
     
-    // vectorCaractertistico = [60, 2018, 7.0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.1, 1, 1, 1, 1, 1, 1.0, 0, 2.0, 0, 3.0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    // vectorCaractertistico = [102, 2018, 7.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, 0, 0, 0, 0, 1.0, 0, 2.0, 0, 3.0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    // vectorCaractertistico = [102, 2018, 7.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, 0, 0, 0, 0, 1.0, 0, 2.0, 0, 3.0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    // // vectorCaractertistico = [60, 2018, 7.0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.1, 1, 1, 1, 1, 1, 1.0, 0, 2.0, 0, 3.0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    // // vectorCaractertistico = [102, 2018, 7.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, 0, 0, 0, 0, 1.0, 0, 2.0, 0, 3.0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    // // vectorCaractertistico = [102, 2018, 7.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, 0, 0, 0, 0, 1.0, 0, 2.0, 0, 3.0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-    // knearestpoints(root, vectorCaractertistico, kvecinos, resultNodes, depth = 0)
-    knearestpoints(root, vectorCaractertistico, kvecinos, resultNodes, depth = 0)
+    // // knearestpoints(root, vectorCaractertistico, kvecinos, resultNodes, depth = 0)
 
-    console.log('makeSearch output');
-    console.log(vectorCaractertistico);
-    console.log(vectorCaractertistico.length);
-    console.log(kvecinos);
-    console.log(resultNodes);
+    // // copia del root
+    // var newRoot = JSON.parse(JSON.stringify(root));
+    // // knearestpoints(root, vectorCaractertistico, kvecinos, resultNodes, depth = 0)
+    // knearestpoints(newRoot, vectorCaractertistico, kvecinos, resultNodes, depth = 0)
+
+    // console.log('makeSearch output');
+    // console.log('root .......', root);
+    // console.log(vectorCaractertistico);
+    // console.log(vectorCaractertistico.length);
+    // console.log(kvecinos);
+    // console.log(resultNodes);
+
+    // realizando el testing.
+    testingData();
 
     return false;
   }
@@ -316,4 +328,70 @@ function makeSearch() {
         select.innerHTML += "<option value=\"" + i + "\">" + opt + "</option>";
     }
 
+  }
+
+  function cloneDataRoot(){
+    var newObject = JSON.parse(JSON.stringify(oldObject));
+    var newObject = JSON.parse(JSON.stringify(oldObject));
+    dataClone
+    for (let i = 0; i < data.length; i++) {
+        dataClone.push();
+        
+    }
+
+  }
+
+  function testingData(){      
+      console.log('Iniciando el testing ', data);
+      
+      // probando los datos con los 3323
+      for(var i = 0; i < data.length; i++) {
+        
+        // Buscar resultados de busqueda
+        kvecinos = [];
+        resultNodes = [];      
+    
+        var newObject = JSON.parse(JSON.stringify(data[i]));
+
+        // reseteando la lista
+        vectorCaractertistico = [...newObject['vector']];    
+        
+        // knearestpoints(root, vectorCaractertistico, kvecinos, resultNodes, depth = 0)
+        var newRoot = JSON.parse(JSON.stringify(root));
+        knearestpoints(newRoot, vectorCaractertistico, kvecinos, resultNodes, depth = 0)
+
+        if(kvecinos.length > 0){ // hubo resultados
+            
+            // eliminando los puntos de distancia euclidiana
+            kvecinos[0].splice(dimentionVector)
+
+            // comparando arreglos
+            if(compareArray(data[i]['vector'], kvecinos[0])){
+                matching++;
+            }
+        }
+        countComparing++;
+      }
+
+      // imprimiendo los valores por si hubo alteracion del objeto
+      console.log(' object root ....', root);
+      console.log(' object data ....', data);
+      console.log(' dimention vector ....', dimentionVector);
+      console.log(' resultados de entrenamiento ...', matching);
+      console.log(' numero de comparaciones  ...', countComparing);
+  }
+  function compareArray(arrayA, arrayB) {
+
+    console.log('vector ', arrayA.length,' - point ', arrayB.length);
+    
+    if(arrayA.length !== arrayB.length) {
+        return false;
+    }        
+    for (let i = 0; i < arrayA.length; i++) {        
+        
+        if(arrayA[i] !== arrayB[i]){
+            return false;
+        }
+    }
+    return true;
   }
