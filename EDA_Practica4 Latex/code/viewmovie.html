@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block intro %}
+	Guia: Aqui podras buscar en un repositorio de peliculas de neflix
+	usando el KDTREE como estructura base y el KNN para la consulta
+	- Puedes buscar una pelicula con un nombre especifico
+	- Puedes hacer clic sobre una fila y mostrar las peliculas mas cercanas
+	de acuerdo a su rating. durancion, anio, y genero
+{% endblock %}
+
+{% block content %}
+<form method="post" class="form-inline">
+	<div class="form-group sm-2">
+		<label class="sr-only" for="searchmovie">Nombre de Pelicula</label>
+		<input name="searchmovie" id="searchmovie" class="form-control" required>
+	</div>
+	<div class="form-group">
+		<input type="submit" value="Buscar Pelicula">
+	</div>
+</form>
+<hr>
+<div class="card">
+	<h5 class="card-header">Vector Caracteristica</h5>
+	<div class="card-body">
+		<h5 class="card-title">Punto de consulta</h5>
+		<p id="result" class="card-text"></p>
+	</div>
+</div>
+
+<div class=page>
+	<h1> Muestra de Datos </h1>
+	{{ table|safe }}
+</div>
+
+
+<div class="card">
+	<h5 class="card-header">Peliculas Relacionadas</h5>
+	<div class="card-body">
+		<h5 class="card-title">K Nodos</h5>
+		<p id="result_nodos" class="card-text"></p>
+	</div>
+</div>
+
+<div class="card">
+	<h5 class="card-header">Vecino en formato de Vectores</h5>
+	<div class="card-body">
+		<h5 class="card-title">K Vecinos</h5>
+		<p id="result_vecinos" class="card-text"></p>
+	</div>
+</div>
+
+{%endblock%}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/controller.js') }}"></script>
+<script>
+
+	function sendSelectedMovie(ev){
+		//console.log($(this).find("input"));
+		ev.preventDefault();                                                    
+		$.ajax({
+			method: "POST",
+			url: {{ url_for("add")|tojson }},                               
+			data: $(this).find("input").serialize()                                       
+		}).done(mostrarResultado);                                              
+	}                                                                               
+
+	function mostrarResultado(data){
+		$("#result").text(data.result[0]); 
+		
+		//las 2 fuentes de datos en  formato json
+		var dataSelMovie = JSON.parse(data.result[0]);
+		var dataTotalMovies = JSON.parse(data.result[1]);
+	
+		console.log("Data el primero",dataTotalMovies["data"][0]);
+		root = build_kdtree(dataTotalMovies["data"]);
+		console.log("Root",root);		
+		kvecinos = [];
+		resultNodes = [];
+		knearestpoints(root,dataSelMovie["data"][0]["vector"],kvecinos,resultNodes,depth=0);
+		console.log("KVECINOS:",kvecinos);
+		$("#result_vecinos").text(kvecinos);
+		
+		//guardar en el local storage inicio de busqueda
+		window.localStorage.setItem("resultNodes",JSON.stringify(resultNodes));
+		window.localStorage.setItem("kvecinosVector",JSON.stringify(kvecinos));
+		var txtMoviesRes = "";
+		for(var i=0; i < resultNodes.length; i++)
+			txtMoviesRes += resultNodes[i].obj.movie_name + ",\n";
+			
+		console.log("Nodos:",txtMoviesRes);		
+		$("#result_nodos").text(txtMoviesRes);
+
+}
+
+</script>
+{% endblock %}
+
